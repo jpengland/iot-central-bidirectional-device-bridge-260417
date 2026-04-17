@@ -1,17 +1,13 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-
+// Copyright (c) Microsoft Corporation. All rights reserved.
 using System;
 using System.Security.Cryptography;
 using System.Text;
 using DeviceBridge.Providers;
 using NLog;
-
 namespace DeviceBridge.Common
 {
     public static class Utils
     {
-        private static SHA256 hasher = SHA256.Create();
-
         /// <summary>
         /// Generates a GUID hashed from an input string.
         /// </summary>
@@ -19,9 +15,9 @@ namespace DeviceBridge.Common
         /// <returns>GUID hashed from input.</returns>
         public static Guid GuidFromString(string input)
         {
-            return new Guid(hasher.ComputeHash(Encoding.Default.GetBytes(input)));
+            byte[] hash = SHA256.HashData(Encoding.UTF8.GetBytes(input));
+            return new Guid(new ReadOnlySpan<byte>(hash, 0, 16));
         }
-
         /// <summary>
         /// Fetches the sql connection string.
         /// </summary>
