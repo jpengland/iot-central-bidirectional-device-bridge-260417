@@ -4,6 +4,7 @@ using System.Security.Cryptography;
 using System.Text;
 using DeviceBridge.Providers;
 using NLog;
+
 namespace DeviceBridge.Common
 {
     public static class Utils
@@ -15,9 +16,11 @@ namespace DeviceBridge.Common
         /// <returns>GUID hashed from input.</returns>
         public static Guid GuidFromString(string input)
         {
-            byte[] hash = SHA256.HashData(Encoding.UTF8.GetBytes(input));
+            using var hasher = SHA256.Create();
+            byte[] hash = hasher.ComputeHash(Encoding.UTF8.GetBytes(input));
             return new Guid(new ReadOnlySpan<byte>(hash, 0, 16));
         }
+
         /// <summary>
         /// Fetches the sql connection string.
         /// </summary>
